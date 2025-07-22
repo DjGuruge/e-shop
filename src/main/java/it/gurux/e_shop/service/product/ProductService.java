@@ -75,11 +75,6 @@ public class ProductService implements IProductService {
                 .orElseThrow(() -> new ProductNotFoundException("Producpppt not found"));
     }
 
-    @Override
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
-    }
-
 
     private Product updateExistingProduct(Product existingProduct, ProductUpdateRequest request) {
         existingProduct.setName(request.getName());
@@ -93,8 +88,14 @@ public class ProductService implements IProductService {
         return existingProduct;
     }
 
+    @Override
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
 
-        @Override
+
+
+    @Override
         public List<Product> getProductsByCategory (String category){
             return productRepository.findByCategoryName(category);
         }

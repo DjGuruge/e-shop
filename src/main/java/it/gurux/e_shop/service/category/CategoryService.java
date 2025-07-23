@@ -3,7 +3,7 @@ package it.gurux.e_shop.service.category;
 
 
 import it.gurux.e_shop.exception.AlreadyExistException;
-import it.gurux.e_shop.exception.ResourceNotFound;
+import it.gurux.e_shop.exception.ResourceNotFoundException;
 import it.gurux.e_shop.model.Category;
 import it.gurux.e_shop.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class CategoryService implements ICategoryService{
     @Override
     public Category getCategoryById(Long id) {
         return categoryRepository.findById(id)
-                .orElseThrow(()-> new ResourceNotFound("Category not found!"));
+                .orElseThrow(()-> new ResourceNotFoundException("Category not found!"));
     }
 
     @Override
@@ -48,7 +48,7 @@ public class CategoryService implements ICategoryService{
         return Optional.ofNullable(getCategoryById(id)).map(oldCategory -> {
             oldCategory.setName(category.getName());
             return categoryRepository.save(oldCategory);
-        })  .orElseThrow(()-> new ResourceNotFound("Category not found"));
+        })  .orElseThrow(()-> new ResourceNotFoundException("Category not found"));
     }
 
     @Override
@@ -56,7 +56,7 @@ public class CategoryService implements ICategoryService{
         categoryRepository.findById(id)
                 .ifPresentOrElse(categoryRepository::delete,
                         ()->{
-                    throw new ResourceNotFound("Category not found");
+                    throw new ResourceNotFoundException("Category not found");
                         });
     }
 }

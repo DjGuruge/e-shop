@@ -8,21 +8,16 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product , Long > {
     List<Product> findByCategoryName(String category);
 
-    List<Product> findByBrandName(String brand);
+    List<Product> findByBrand(String brand);
 
-    List<Product> findByCategoryAndBrand(String category, String brand);
+    List<Product> findByCategory_NameAndBrand(String category, String brand);
 
-    List<Product> findByProductName(String name);
-
-    List<Product> findNameAndBrand(String name,String brand);
+    List<Product> findByNameAndBrand(String name,String brand);
 
     Long countByBrandAndName(String brand, String name);
-
-    Long countProductsByBrand(String brand);
 
     void deleteById(Long id);
 
     List<Product> findByName(String name);
 
-    List<Product> findByBrandAndName(String brand, String name);
 }

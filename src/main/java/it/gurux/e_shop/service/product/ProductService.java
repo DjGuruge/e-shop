@@ -1,6 +1,7 @@
 package it.gurux.e_shop.service.product;
 
 import it.gurux.e_shop.exception.ProductNotFoundException;
+import it.gurux.e_shop.exception.ResourceNotFoundException;
 import it.gurux.e_shop.model.Category;
 import it.gurux.e_shop.model.Product;
 import it.gurux.e_shop.repository.CategoryRepository;
@@ -26,10 +27,10 @@ public class ProductService implements IProductService {
 
     @Override
     public Product addProduct(AddProductRequest request) {
-        // chef if the categoru is foind in the db
-        // if yes set it as the  new prodict categoru
-        // if no the save it as new category
-        // the set as the new product category
+        // check if the category is find in the db
+        // if yes set it as the  new product category
+        // if no then save it as new category
+        // then set as the new product category
         Category category = Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName()))
                 .orElseGet(() -> {
                     Category newCategory = new Category(request.getCategory().getName());
@@ -56,14 +57,14 @@ public class ProductService implements IProductService {
     @Override
     public Product getProductByID(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
     }
 
     @Override
     public void deleteProductById(Long id) {
         productRepository.findById(id).ifPresentOrElse(productRepository::delete,
                 () -> {
-                    throw new ProductNotFoundException("Product not found");
+                    throw new ResourceNotFoundException("Product not found");
                 });
     }
 
@@ -72,7 +73,7 @@ public class ProductService implements IProductService {
         return productRepository.findById(productId)
                 .map(existingProduct -> updateExistingProduct(existingProduct, request))
                 .map(productRepository::save)
-                .orElseThrow(() -> new ProductNotFoundException("Producpppt not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
     }
 
 
@@ -94,38 +95,37 @@ public class ProductService implements IProductService {
     }
 
 
+    @Override
+    public List<Product> getProductsByCategory(String category) {
+        return productRepository.findByCategoryName(category);
+    }
 
     @Override
-        public List<Product> getProductsByCategory (String category){
-            return productRepository.findByCategoryName(category);
-        }
-
-        @Override
-        public List<Product> getProductsByBrand (String brand){
-            return productRepository.findByBrandName(brand);
-        }
-
-        @Override
-        public List<Product> getProductsByCategoryAndBrand (String category, String brand){
-            return productRepository.findByCategoryAndBrand(category, brand);
-        }
-
-
-        @Override
-        public List<Product> getProductsByBrandAndName (String brand, String name){
-            return productRepository.findByBrandAndName(brand, name);
-        }
-
-        @Override
-        public List<Product> getProductsByName (String name){
-            return productRepository.findByName(name);
-        }
-
-        @Override
-        public Long countProductsByBrandAndName (String brand, String name){
-            return productRepository.countByBrandAndName(brand, name);
-        }
+    public List<Product> getProductsByBrand(String brand) {
+        return productRepository.findByBrand(brand);
     }
+
+    @Override
+    public List<Product> getProductsByCategoryAndBrand(String category, String brand) {
+        return productRepository.findByCategory_NameAndBrand(category, brand);
+    }
+
+
+    @Override
+    public List<Product> getProductsByBrandAndName(String brand, String name) {
+        return productRepository.findByNameAndBrand(brand, name);
+    }
+
+    @Override
+    public List<Product> getProductsByName(String name) {
+        return productRepository.findByName(name);
+    }
+
+    @Override
+    public Long countProductsByBrandAndName(String brand, String name) {
+        return productRepository.countByBrandAndName(brand, name);
+    }
+}
 
 
 

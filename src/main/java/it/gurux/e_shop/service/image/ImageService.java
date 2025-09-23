@@ -6,7 +6,10 @@ import it.gurux.e_shop.model.Image;
 import it.gurux.e_shop.model.Product;
 import it.gurux.e_shop.repository.ImageRepository;
 import it.gurux.e_shop.service.product.IProductService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -56,7 +59,7 @@ public class ImageService implements IImageService{
                 Image savedImage = imageRepository.save(image);
 
                 // 2. Now that we have the ID, construct the correct download URL
-                String downloadUrl = "/api/v1/images/image/download/" + savedImage.getId();
+                String downloadUrl = "/images/image/download/" + savedImage.getId();
                 savedImage.setDownloadUrl(downloadUrl);
 
                 // 3. Save the image again to persist the downloadUrl.
@@ -88,5 +91,12 @@ public class ImageService implements IImageService{
         } catch (IOException | SQLException e) {
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+
+
+    @Override
+    public void updateAllImageDownloadUrls() {
+        imageRepository.updateAllImageDownloadUrls();
     }
 }

@@ -83,6 +83,13 @@ public class ImageController {
         return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("Delete failed!",INTERNAL_SERVER_ERROR));
 
     }
+    @GetMapping("image/update-all-urls")
+    public ResponseEntity<String> updateAllImageUrls() {
+        imageService.updateAllImageDownloadUrls();
+        return ResponseEntity.ok("All image download URLs have been updated.");
+    }
+
+
 
 
 

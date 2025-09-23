@@ -68,8 +68,8 @@ public class ImageService implements IImageService{
 
                 // 4. Build the DTO using the fully updated object
                 ImageDto imageDto = new ImageDto();
-                imageDto.setImageId(fullyUpdatedImage.getId());
-                imageDto.setImageName(fullyUpdatedImage.getFileName());
+                imageDto.setId(fullyUpdatedImage.getId());
+                imageDto.setFileName(fullyUpdatedImage.getFileName());
                 imageDto.setDownloadUrl(fullyUpdatedImage.getDownloadUrl());
                 savedImageDto.add(imageDto);
 

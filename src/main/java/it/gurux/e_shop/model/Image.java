@@ -1,5 +1,6 @@
 package it.gurux.e_shop.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,13 +23,17 @@ public class Image {
     private Long id;
     private String fileName;
     private String fileType;
+    private String downloadUrl;
 
     @Lob
+    @JsonIgnore
     private Blob image;
-    private String downloadUrl;
+
+
 
     @ManyToOne
     @JoinColumn(name = "product_id")
+    @JsonIgnore
     private Product product;
 
 }

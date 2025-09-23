@@ -17,9 +17,11 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("${api.prefix}/products")
+@RequestMapping(value = "${api.prefix}/products")
 public class ProductController {
-    private IProductService productService;
+
+
+    private final IProductService productService;
 
     @GetMapping("/all")
     public ResponseEntity<ApiResponse> getAllProducts() {
@@ -99,7 +101,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("products/{name}/products")
+    @GetMapping("/products/{name}/products")
     public ResponseEntity<ApiResponse> getProductByName(@PathVariable String name){
         try {
             List<Product> productList = productService.getProductsByName(name);
@@ -112,8 +114,8 @@ public class ProductController {
         }
     }
 
-   @GetMapping("products/by/brand")
-    public ResponseEntity<ApiResponse> getProductByBrand(@PathVariable String brand){
+    @GetMapping("/product/by-brand")
+    public ResponseEntity<ApiResponse> getProductByBrand(@RequestParam String brand){
         try {
             List<Product> productList = productService.getProductsByBrand(brand);
             if (productList.isEmpty()){
@@ -121,25 +123,25 @@ public class ProductController {
             }
             return ResponseEntity.ok(new ApiResponse("Product Found", productList));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse("Not found!",null));
+            return ResponseEntity.ok(new ApiResponse(e.getMessage(),null));
         }
     }
 
-    @GetMapping("products/{category}/all/products")
+    @GetMapping("/product/{category}/all/products")
     public ResponseEntity<ApiResponse> getProductsByCategory(@PathVariable String category){
         try {
-            List<Product> productList = productService.getProductsByName(category);
+            List<Product> productList = productService.getProductsByCategory(category);
             if (productList.isEmpty()){
                 return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("Product not found!", null));
             }
             return ResponseEntity.ok(new ApiResponse("Product Found", productList));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse("Not found!",null));
+            return ResponseEntity.ok(new ApiResponse(e.getMessage(),null));
         }
     }
 
-    @GetMapping("product/count/by-brand/and-name")
-    public ResponseEntity<ApiResponse> countProductsByBrandName(@RequestParam String brand,@RequestParam String name){
+    @GetMapping("/product/count/by-brand/and-name")
+    public ResponseEntity<ApiResponse> countProductsByBrandAndName(@RequestParam String brand,@RequestParam String name){
         try {
             var productList = productService.countProductsByBrandAndName(brand,name);
              return ResponseEntity.ok(new ApiResponse("Product counted", productList));

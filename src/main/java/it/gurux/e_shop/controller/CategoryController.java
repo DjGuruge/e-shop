@@ -56,10 +56,6 @@ public class CategoryController {
         }
     }
 
-
-
-
-
     @GetMapping("category/{name}/category")
     public ResponseEntity<ApiResponse> getCategoryByName(@PathVariable String name) {
         try {

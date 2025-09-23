@@ -8,7 +8,6 @@ import it.gurux.e_shop.repository.ImageRepository;
 import it.gurux.e_shop.service.product.IProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -53,13 +52,13 @@ public class ImageService implements IImageService{
                 image.setImage(new SerialBlob(file.getBytes()));
                 image.setProduct(product);
 
-                String buildDownloadUrl = "/api/v1/images/image/download/" + image.getId();
-                String downloadUrl = buildDownloadUrl + image.getId();
-                image.setDownloadUrl(downloadUrl);
+                // Save the image first to get a valid ID
                 Image savedImage = imageRepository.save(image);
 
-                savedImage.setDownloadUrl(buildDownloadUrl + savedImage.getId());
-                imageRepository.save(savedImage);
+                // Now that we have the ID, set the download URL correctly
+                String downloadUrl = "/api/v1/images/image/download/" + savedImage.getId();
+                savedImage.setDownloadUrl(downloadUrl);
+                imageRepository.save(savedImage); // Save again to update the URL
 
                 ImageDto imageDto = new ImageDto();
                 imageDto.setImageId(savedImage.getId());
@@ -69,7 +68,6 @@ public class ImageService implements IImageService{
 
             } catch (IOException | SQLException e) {
                 throw new RuntimeException((e.getMessage()));
-
             }
         }
         return savedImageDto;

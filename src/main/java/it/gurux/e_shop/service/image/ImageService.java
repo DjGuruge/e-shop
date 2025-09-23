@@ -42,8 +42,8 @@ public class ImageService implements IImageService{
     @Override
     public List<ImageDto> saveImages(List<MultipartFile> files, Long productId) {
         Product product = iProductService.getProductByID(productId);
-
         List<ImageDto> savedImageDto = new ArrayList<>();
+
         for (MultipartFile file : files) {
             try {
                 Image image = new Image();
@@ -52,18 +52,22 @@ public class ImageService implements IImageService{
                 image.setImage(new SerialBlob(file.getBytes()));
                 image.setProduct(product);
 
-                // Save the image first to get a valid ID
+                // 1. Save the image to the repository to generate an ID
                 Image savedImage = imageRepository.save(image);
 
-                // Now that we have the ID, set the download URL correctly
+                // 2. Now that we have the ID, construct the correct download URL
                 String downloadUrl = "/api/v1/images/image/download/" + savedImage.getId();
                 savedImage.setDownloadUrl(downloadUrl);
-                imageRepository.save(savedImage); // Save again to update the URL
 
+                // 3. Save the image again to persist the downloadUrl.
+                //    Crucially, use the returned object from this save.
+                Image fullyUpdatedImage = imageRepository.save(savedImage);
+
+                // 4. Build the DTO using the fully updated object
                 ImageDto imageDto = new ImageDto();
-                imageDto.setImageId(savedImage.getId());
-                imageDto.setImageName(savedImage.getFileName());
-                imageDto.setDownloadUrl(savedImage.getDownloadUrl());
+                imageDto.setImageId(fullyUpdatedImage.getId());
+                imageDto.setImageName(fullyUpdatedImage.getFileName());
+                imageDto.setDownloadUrl(fullyUpdatedImage.getDownloadUrl());
                 savedImageDto.add(imageDto);
 
             } catch (IOException | SQLException e) {

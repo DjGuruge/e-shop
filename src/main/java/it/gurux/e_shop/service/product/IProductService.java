@@ -2,6 +2,7 @@ package it.gurux.e_shop.service.product;
 
 import java.util.List;
 
+import it.gurux.e_shop.dto.ProductDto;
 import it.gurux.e_shop.model.Product;
 import it.gurux.e_shop.request.AddProductRequest;
 import it.gurux.e_shop.request.ProductUpdateRequest;
@@ -23,6 +24,7 @@ public interface IProductService {
     Long countProductsByBrandAndName(String brand, String name);
 
 
+    List<ProductDto> getConvertedProducts(List<Product> products);
 
-
+    ProductDto convertToDto(Product product);
 }

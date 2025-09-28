@@ -4,7 +4,6 @@ package it.gurux.e_shop.controller;
 import it.gurux.e_shop.exception.ResourceNotFoundException;
 import it.gurux.e_shop.model.Cart;
 import it.gurux.e_shop.response.ApiResponse;
-import it.gurux.e_shop.service.cart.CartService;
 import it.gurux.e_shop.service.cart.ICartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

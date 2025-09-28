@@ -6,13 +6,13 @@ import it.gurux.e_shop.model.Product;
 import it.gurux.e_shop.repository.CartItemRepository;
 import it.gurux.e_shop.repository.CartRepository;
 import it.gurux.e_shop.service.product.IProductService;
-import lombok.NoArgsConstructor;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@NoArgsConstructor
+
 public class CartItemService implements ICartItemService{
     private final CartItemRepository cartItemRepository;
     private final IProductService productService;

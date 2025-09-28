@@ -4,6 +4,7 @@ import it.gurux.e_shop.model.Cart;
 import it.gurux.e_shop.model.CartItem;
 import it.gurux.e_shop.model.Product;
 import it.gurux.e_shop.repository.CartItemRepository;
+import it.gurux.e_shop.repository.CartRepository;
 import it.gurux.e_shop.service.product.IProductService;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ public class CartItemService implements ICartItemService{
     private final CartItemRepository cartItemRepository;
     private final IProductService productService;
     private final ICartService cartService;
+    private final CartRepository cartRepository;
 
 
     @Override
@@ -35,8 +37,15 @@ public class CartItemService implements ICartItemService{
             cartItem.setCart(cart);
             cartItem.setProduct(product);
             cartItem.setQuantity(quantity);
+            cartItem.setUnitPrice(product.getPrice());
+        }else{
+            cartItem.setQuantity(cartItem.getQuantity()+ quantity);
 
         }
+        cartItem.setTotalPrice();
+        cart.addItem(cartItem);
+        cartItemRepository.save(cartItem);
+        cartRepository.save(cart);
 
     }
 

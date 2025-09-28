@@ -11,6 +11,8 @@ import it.gurux.e_shop.service.product.IProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+
 @Service
 @RequiredArgsConstructor
 
@@ -55,13 +57,24 @@ public class CartItemService implements ICartItemService{
         Cart cart = cartService.getCart(cartId);
         CartItem itemToRemove = cart.getItems()
                 .stream()
-                .filter(item-> item.getProduct().getId().equals(productId))
-                .findFirst().orElseThrow(()-> new ResourceNotFoundException("Product not found"));
+                .filter(item -> item.getProduct().getId().equals(productId))
+                .findFirst().orElseThrow(() -> new ResourceNotFoundException("Product not found"));
         cart.removeItem(itemToRemove);
         cartRepository.save(cart);
-
+    }
     @Override
-    public void updateItemQuantity(Long CartId, Long productId, int quantity) {
+    public void updateItemQuantity(Long cartId, Long productId, int quantity) {
+        Cart cart = cartService.getCart(cartId);
+        cart.getItems().stream().filter(item->item.getProduct().getId().equals(productId))
+                .findFirst()
+                .ifPresent(item->{
+                    item.setQuantity(quantity);
+                    item.setUnitPrice(item.getProduct().getPrice());
+                    item.setTotalPrice();
+                });
+        BigDecimal totalAmount = cart.getTotalAmount();
+        cart.setTotalAmount(totalAmount);
+        cartRepository.save(cart);
 
     }
 }

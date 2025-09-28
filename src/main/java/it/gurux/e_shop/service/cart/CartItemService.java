@@ -1,5 +1,6 @@
 package it.gurux.e_shop.service.cart;
 
+import it.gurux.e_shop.exception.ResourceNotFoundException;
 import it.gurux.e_shop.model.Cart;
 import it.gurux.e_shop.model.CartItem;
 import it.gurux.e_shop.model.Product;
@@ -51,8 +52,13 @@ public class CartItemService implements ICartItemService{
 
     @Override
     public void removeItemFromCart(Long cartId, Long productId) {
-
-    }
+        Cart cart = cartService.getCart(cartId);
+        CartItem itemToRemove = cart.getItems()
+                .stream()
+                .filter(item-> item.getProduct().getId().equals(productId))
+                .findFirst().orElseThrow(()-> new ResourceNotFoundException("Product not found"));
+        cart.removeItem(itemToRemove);
+        cartRepository.save(cart);
 
     @Override
     public void updateItemQuantity(Long CartId, Long productId, int quantity) {

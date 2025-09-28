@@ -52,13 +52,19 @@ public class CartItemService implements ICartItemService{
 
     }
 
+    public CartItem getCartItem(Long cartId, Long productId){
+        Cart cart = cartService.getCart(cartId);
+        return cart.getItems()
+                .stream()
+                .filter(item -> item.getProduct().getId().equals(productId))
+                .findFirst().orElseThrow(() -> new ResourceNotFoundException("Item not found"));
+
+    }
+
     @Override
     public void removeItemFromCart(Long cartId, Long productId) {
         Cart cart = cartService.getCart(cartId);
-        CartItem itemToRemove = cart.getItems()
-                .stream()
-                .filter(item -> item.getProduct().getId().equals(productId))
-                .findFirst().orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+        CartItem itemToRemove = getCartItem(cartId, productId);
         cart.removeItem(itemToRemove);
         cartRepository.save(cart);
     }
@@ -75,15 +81,6 @@ public class CartItemService implements ICartItemService{
         BigDecimal totalAmount = cart.getTotalAmount();
         cart.setTotalAmount(totalAmount);
         cartRepository.save(cart);
-
-    }
-
-    public CartItem getCartItem(Long cartId, Long productId){
-        Cart cart = cartService.getCart(cartId);
-        return cart.getItems()
-                .stream()
-                .filter(item -> item.getProduct().getId().equals(productId))
-                .findFirst().orElseThrow(() -> new ResourceNotFoundException("Item not found"));
 
     }
 }

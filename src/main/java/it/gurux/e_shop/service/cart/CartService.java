@@ -2,6 +2,7 @@ package it.gurux.e_shop.service.cart;
 
 import it.gurux.e_shop.exception.ResourceNotFoundException;
 import it.gurux.e_shop.model.Cart;
+import it.gurux.e_shop.model.CartItem;
 import it.gurux.e_shop.repository.CartItemRepository;
 import it.gurux.e_shop.repository.CartRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,10 +29,15 @@ public class CartService implements ICartService{
     @Override
     public void clearCart(Long id) {
         Cart cart = getCart(id);
+        cartItemRepository.deleteAllByCartId(id);
+        cart.getItems().clear();
+        cartRepository.deleteById(id);
+
     }
 
     @Override
     public BigDecimal getTotalPrice(Long id) {
-        return null;
+        Cart cart = getCart(id);
+        return cart.getTotalAmount();
     }
 }

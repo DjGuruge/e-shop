@@ -1,11 +1,11 @@
 package it.gurux.e_shop.service.image;
 
-import it.gurux.e_shop.dto.ImageDto;
-import it.gurux.e_shop.model.Image;
-import it.gurux.e_shop.model.Product;
+import java.util.List;
+
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import it.gurux.e_shop.dto.ImageDto;
+import it.gurux.e_shop.model.Image;
 
 public interface IImageService {
     Image getImageById(Long id);

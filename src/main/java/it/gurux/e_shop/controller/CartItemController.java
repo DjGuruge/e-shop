@@ -41,7 +41,7 @@ public class CartItemController {
         }
     }
 
-    @PostMapping("/cart/{cartId}/item/{productId}/update")
+    @PostMapping("/cart/{cartId}/item/{itemId}/update")
     public ResponseEntity<ApiResponse> updateItemQuantity(@PathVariable Long cartId
             ,@PathVariable Long itemId
             ,@RequestParam Integer quantity ){
@@ -49,7 +49,7 @@ public class CartItemController {
             cartItemService.updateItemQuantity(cartId, itemId, quantity);
             return ResponseEntity.ok(new ApiResponse("Item quantity updated",null));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(e.getMessage(),null);
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(),null));
         }
 
     }

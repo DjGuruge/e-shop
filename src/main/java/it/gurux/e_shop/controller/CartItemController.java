@@ -16,6 +16,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class CartItemController {
 
     private final ICartItemService cartItemService;
+    private final ICartService cartService;
 
 
     @PostMapping("/item/add")
@@ -23,6 +24,9 @@ public class CartItemController {
                                                @RequestParam Long productId,
                                                @RequestParam Integer quantity){
         try {
+            if (cartId == null){
+               cartId = cartService.initialaizeNewCart();
+            }
             cartItemService.addItemToCart(cartId, productId, quantity);
             return ResponseEntity.ok(new ApiResponse("Item added to Cart Successfully",null));
         } catch (ResourceNotFoundException e) {

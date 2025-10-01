@@ -6,10 +6,7 @@ import it.gurux.e_shop.service.cart.ICartItemService;
 import it.gurux.e_shop.service.cart.ICartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -31,6 +28,30 @@ public class CartItemController {
         } catch (ResourceNotFoundException e) {
                 return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(),null));
         }
+    }
+
+    @DeleteMapping("/{cartId}/item/{itemId}/remove")
+    public ResponseEntity<ApiResponse> removeItemFromCart (@PathVariable Long cartId,
+                                                           @PathVariable Long itemId){
+        try {
+            cartItemService.removeItemFromCart(cartId, itemId);
+            return  ResponseEntity.ok(new ApiResponse( ("Item Removed Success"), null));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @PostMapping("/cart/{cartId}/item/{productId}/update")
+    public ResponseEntity<ApiResponse> updateItemQuantity(@PathVariable Long cartId
+            ,@PathVariable Long itemId
+            ,@RequestParam Integer quantity ){
+        try {
+            cartItemService.updateItemQuantity(cartId, itemId, quantity);
+            return ResponseEntity.ok(new ApiResponse("Item quantity updated",null));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND).body(e.getMessage(),null);
+        }
+
     }
 
 }

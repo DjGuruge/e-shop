@@ -20,7 +20,7 @@ public class CartItemController {
 
 
     @PostMapping("/item/add")
-    public ResponseEntity<ApiResponse> addItem(@RequestParam Long cartId,
+    public ResponseEntity<ApiResponse> addItem(@RequestParam(required = false) Long cartId,
                                                @RequestParam Long productId,
                                                @RequestParam Integer quantity){
         try {
@@ -45,7 +45,7 @@ public class CartItemController {
         }
     }
 
-    @PostMapping("/cart/{cartId}/item/{itemId}/update")
+    @PutMapping("/cart/{cartId}/item/{itemId}/update")
     public ResponseEntity<ApiResponse> updateItemQuantity(@PathVariable Long cartId
             ,@PathVariable Long itemId
             ,@RequestParam Integer quantity ){

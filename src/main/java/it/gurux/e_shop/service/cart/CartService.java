@@ -4,6 +4,7 @@ import it.gurux.e_shop.exception.ResourceNotFoundException;
 import it.gurux.e_shop.model.Cart;
 import it.gurux.e_shop.repository.CartItemRepository;
 import it.gurux.e_shop.repository.CartRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ public class CartService implements ICartService{
         return cartRepository.save(cart);
     }
 
+    @Transactional
     @Override
     public void clearCart(Long id) {
         Cart cart = getCart(id);

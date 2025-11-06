@@ -1,5 +1,6 @@
 package it.gurux.e_shop.service.user;
 
+import it.gurux.e_shop.exception.ResourceNotFoundException;
 import it.gurux.e_shop.model.User;
 import it.gurux.e_shop.repository.UserRepository;
 import it.gurux.e_shop.request.CreateUserRequest;
@@ -17,7 +18,7 @@ public class UserService implements IUserService {
 
     @Override
     public User getUserById(Long userId) {
-        return null;
+        return userRepository.findById(userId).orElseThrow()->new ResourceNotFoundException("User not found");
     }
 
     @Override
@@ -32,6 +33,8 @@ public class UserService implements IUserService {
 
     @Override
     public void deleteUser(Long userId) {
+        userRepository.findById(userId).ifPresent(userRepository::delete,()->
+        {throw new ResourceNotFoundException("User not found")});
 
     }
 }

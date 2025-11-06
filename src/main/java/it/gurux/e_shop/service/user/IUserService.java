@@ -6,7 +6,7 @@ import it.gurux.e_shop.request.CreateUserRequest;
 import it.gurux.e_shop.request.UserUpdateRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface IUserService extends JpaRepository<User,Long> {
+public interface IUserService  {
 
     User getUserById (Long userId);
     User createUser (CreateUserRequest request);

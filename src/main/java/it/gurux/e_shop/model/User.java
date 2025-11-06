@@ -3,6 +3,7 @@ package it.gurux.e_shop.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.NaturalId;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class User {
     private Long id;
     private String name;
     private String lastName;
+    @NaturalId
     private String email;
     private String password;
 

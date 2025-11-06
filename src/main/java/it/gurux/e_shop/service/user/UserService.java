@@ -1,5 +1,6 @@
 package it.gurux.e_shop.service.user;
 
+import it.gurux.e_shop.exception.AlreadyExistException;
 import it.gurux.e_shop.exception.ResourceNotFoundException;
 import it.gurux.e_shop.model.User;
 import it.gurux.e_shop.repository.UserRepository;
@@ -8,6 +9,8 @@ import it.gurux.e_shop.request.UserUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 
 @Service
@@ -23,7 +26,16 @@ public class UserService implements IUserService {
 
     @Override
     public User createUser(CreateUserRequest request) {
-        return null;
+        return Optional.of(request)
+                .filter(user-> !userRepository.existsByEmail(request.getEmail()))
+                .map(req-> {
+                    User user = new User();
+                    user.setEmail(request.getEmail());
+                    user.setPassword(request.getPassword());
+                    user.setFirstName(request.getName());
+                    user.setLastName(request.getLastName());
+                    return userRepository.save(User);
+                }).orElseThrow(()->new AlreadyExistException("User already exist"));
     }
 
     @Override

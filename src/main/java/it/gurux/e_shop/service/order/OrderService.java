@@ -50,7 +50,7 @@ public class OrderService implements IOrderService{
     @Override
     public Order getOrder(Long orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(()->new ResourceNotFoundException("Order not found"));
+                .orElseThrow(()->new ResourceNotFoundException("No Order found"));
     }
 
     private List<OrderItem> createOrderItem(Order order, Cart cart){

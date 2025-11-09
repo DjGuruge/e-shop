@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.w3c.dom.stylesheets.LinkStyle;
 
 @RequiredArgsConstructor
 @RestController
@@ -32,6 +33,16 @@ public class OrderController {
         try {
 
             Order order = orderService.getOrder(orderId);
+        return ResponseEntity.ok(new ApiResponse("Order List Found! ",order));
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error occurred",e.getMessage()));
+    }
+
+    }@GetMapping("/{userId}/order")
+    public ResponseEntity<ApiResponse> getUserOrders(@PathVariable Long userId){
+        try {
+
+            List<Order> order = orderService.getUserOrders(userId);
         return ResponseEntity.ok(new ApiResponse("Order List Found! ",order));
     } catch (Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error occurred",e.getMessage()));

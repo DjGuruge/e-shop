@@ -43,7 +43,7 @@ public class OrderController {
         try {
 
             List<Order> order = orderService.getUserOrders(userId);
-        return ResponseEntity.ok(new ApiResponse("Order List Found! ",order));
+        return ResponseEntity.ok(new ApiResponse("Orders List Found! ",order));
     } catch (Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error occurred",e.getMessage()));
     }    }

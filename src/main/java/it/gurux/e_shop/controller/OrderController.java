@@ -23,8 +23,8 @@ public class OrderController {
     @GetMapping("/order")
     public ResponseEntity<ApiResponse> createOrder(@RequestParam Long userId){
         try {
-            OrderDto orderDto = orderService.placeOrder(userId);
-            return ResponseEntity.ok(new ApiResponse("Order Success! ",orderDto));
+            Order order = orderService.placeOrder(userId);
+            return ResponseEntity.ok(new ApiResponse("Order Success! ",order));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error occured",e.getMessage()));
         }
@@ -34,8 +34,7 @@ public class OrderController {
     @GetMapping("/{orderId}/order")
     public ResponseEntity<ApiResponse> getOrderById(@PathVariable Long orderId){
         try {
-
-            Order order = orderService.getOrder(orderId);
+            OrderDto order = orderService.getOrder(orderId);
         return ResponseEntity.ok(new ApiResponse("Order List Found! ",order));
     } catch (Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error occurred",e.getMessage()));
@@ -45,7 +44,7 @@ public class OrderController {
     public ResponseEntity<ApiResponse> getUserOrders(@PathVariable Long userId){
         try {
 
-            List<Order> order = orderService.getUserOrders(userId);
+            List<OrderDto> order = orderService.getUserOrders(userId);
         return ResponseEntity.ok(new ApiResponse("Orders List Found! ",order));
     } catch (Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error occurred",e.getMessage()));

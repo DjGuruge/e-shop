@@ -1,5 +1,6 @@
 package it.gurux.e_shop.controller;
 
+import it.gurux.e_shop.dto.OrderDto;
 import it.gurux.e_shop.model.Order;
 import it.gurux.e_shop.response.ApiResponse;
 import it.gurux.e_shop.service.order.IOrderService;
@@ -9,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.w3c.dom.stylesheets.LinkStyle;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -20,8 +23,8 @@ public class OrderController {
     @GetMapping("/order")
     public ResponseEntity<ApiResponse> createOrder(@RequestParam Long userId){
         try {
-            Order order = orderService.placeOrder(userId);
-            return ResponseEntity.ok(new ApiResponse("Order Success! ",order));
+            OrderDto orderDto = orderService.placeOrder(userId);
+            return ResponseEntity.ok(new ApiResponse("Order Success! ",orderDto));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error occured",e.getMessage()));
         }

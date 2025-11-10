@@ -1,5 +1,6 @@
 package it.gurux.e_shop.service.order;
 
+import it.gurux.e_shop.dto.OrderDto;
 import it.gurux.e_shop.enums.OrderStatus;
 import it.gurux.e_shop.exception.ResourceNotFoundException;
 import it.gurux.e_shop.model.Cart;
@@ -9,7 +10,9 @@ import it.gurux.e_shop.model.Product;
 import it.gurux.e_shop.repository.OrderRepository;
 import it.gurux.e_shop.repository.ProductRepository;
 import it.gurux.e_shop.service.cart.CartService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -24,7 +27,9 @@ public class OrderService implements IOrderService{
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final CartService cartService;
+    private final ModelMapper modelMapper;
 
+    @Transactional
     @Override
     public Order placeOrder(Long userId) {
         Cart cart = cartService.getCartByUserId(userId);
@@ -77,6 +82,10 @@ public class OrderService implements IOrderService{
     @Override
     public List<Order> getUserOrders(Long userId){
         return orderRepository.findByUserId(userId);
+    }
+
+    private OrderDto convertToDto(Order order){
+        return modelMapper.map(order, OrderDto.class);
     }
 
 }

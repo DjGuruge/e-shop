@@ -1,5 +1,6 @@
 package it.gurux.e_shop.service.user;
 
+import it.gurux.e_shop.dto.UserDto;
 import it.gurux.e_shop.model.User;
 
 import it.gurux.e_shop.request.CreateUserRequest;
@@ -13,4 +14,5 @@ public interface IUserService  {
     User updateUser (UserUpdateRequest request, Long userId);
     void deleteUser (Long userId);
 
+    UserDto convertUSerToDto(User user);
 }

@@ -1,5 +1,6 @@
 package it.gurux.e_shop.service.user;
 
+import it.gurux.e_shop.dto.UserDto;
 import it.gurux.e_shop.exception.AlreadyExistException;
 import it.gurux.e_shop.exception.ResourceNotFoundException;
 import it.gurux.e_shop.model.User;
@@ -7,6 +8,7 @@ import it.gurux.e_shop.repository.UserRepository;
 import it.gurux.e_shop.request.CreateUserRequest;
 import it.gurux.e_shop.request.UserUpdateRequest;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -17,6 +19,7 @@ import java.util.Optional;
 public class UserService implements IUserService {
 
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public User getUserById(Long userId) {
@@ -52,6 +55,12 @@ public class UserService implements IUserService {
     public void deleteUser(Long userId) {
         userRepository.findById(userId).ifPresentOrElse(userRepository::delete,()->
         {throw new ResourceNotFoundException("User not found");});
+
+    }
+
+    @Override
+    public UserDto convertUSerToDto(User user){
+        return modelMapper.map(user, UserDto.class);
 
     }
 }

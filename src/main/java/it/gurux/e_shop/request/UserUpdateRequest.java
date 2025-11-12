@@ -8,7 +8,7 @@ import lombok.Setter;
 @Data
 public class UserUpdateRequest {
 
-    private String name;
+    private String firstName;
     private String lastName;
 
 }

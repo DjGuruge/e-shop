@@ -23,7 +23,7 @@ public class CartItem {
     private Long id;
 
 
-    private int quantity;
+    private Integer quantity;
     private BigDecimal unitPrice;
     private BigDecimal totalPrice;
 

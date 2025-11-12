@@ -34,14 +34,14 @@ public class UserService implements IUserService {
                     user.setPassword(request.getPassword());
                     user.setFirstName(request.getName());
                     user.setLastName(request.getLastName());
-                    return userRepository.save(User);
-                }).orElseThrow(()->new AlreadyExistException(request.getEmail())+"already exist");
+                    return userRepository.save(user);
+                }).orElseThrow(()->new AlreadyExistException(request.getEmail()+"already exist"));
     }
 
     @Override
     public User updateUser(UserUpdateRequest request, Long userId) {
         return userRepository.findById(userId).map(existingUser ->{
-            existingUser.setFirstName(request.getName());
+            existingUser.setFirstName(request.getFirstName());
             existingUser.setLastName(request.getLastName());
             return userRepository.save(existingUser);
 
@@ -50,8 +50,8 @@ public class UserService implements IUserService {
 
     @Override
     public void deleteUser(Long userId) {
-        userRepository.findById(userId).ifPresent(userRepository::delete,()->
-        {throw new ResourceNotFoundException("User not found")});
+        userRepository.findById(userId).ifPresentOrElse(userRepository::delete,()->
+        {throw new ResourceNotFoundException("User not found");});
 
     }
 }

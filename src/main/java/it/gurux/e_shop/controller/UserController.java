@@ -1,16 +1,16 @@
 package it.gurux.e_shop.controller;
 
+import it.gurux.e_shop.exception.AlreadyExistException;
 import it.gurux.e_shop.exception.ResourceNotFoundException;
 import it.gurux.e_shop.model.User;
+import it.gurux.e_shop.request.CreateUserRequest;
 import it.gurux.e_shop.response.ApiResponse;
 import it.gurux.e_shop.service.user.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RequiredArgsConstructor
@@ -31,5 +31,22 @@ public class UserController {
             return ResponseEntity.status(NOT_FOUND)
                     .body(new ApiResponse(e.getMessage(), null));        }
     }
+
+    @PostMapping("/add")
+    public ResponseEntity<ApiResponse> createUser(@RequestBody CreateUserRequest request){
+        try {
+            User user = userService.createUser(request);
+            return ResponseEntity.ok(new ApiResponse("Create user success", user));
+        } catch (AlreadyExistException e) {
+            return ResponseEntity.status(CONFLICT, new ApiResponse(e.getMessage(), null));
+        }
+
+    }
+
+
+
+
+
+
 
 }

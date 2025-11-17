@@ -20,8 +20,6 @@ public class OrderItem {
     private int quantity;
     private BigDecimal price;
 
-    //this JsonIgnore
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name =  "order_id")
     private Order order;

@@ -9,10 +9,12 @@ import it.gurux.e_shop.repository.CartRepository;
 import it.gurux.e_shop.service.product.IProductService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 
@@ -30,24 +32,45 @@ public class CartItemService implements ICartItemService{
         //3. check if the product is already in the cart
         //4. if yes increase the quantity with the requested quantity
         //5. if not, initiate a new cartItem entry
-        Cart cart = cartService.getCart(cartId);
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(()-> new ResourceNotFoundException("cart not found"));
         Product product = productService.getProductByID(productId);
-        CartItem cartItem = cart.getItems()
+
+        CartItem existingItem = cart.getItems()
                 .stream()
                 .filter(item -> item.getProduct().getId().equals(productId))
-                .findFirst().orElse(new CartItem());
-        if (cartItem.getId() == null){
-            cartItem.setCart(cart);
-            cartItem.setProduct(product);
-            cartItem.setQuantity(quantity);
-            cartItem.setUnitPrice(product.getPrice());
-        }else{
-            cartItem.setQuantity(cartItem.getQuantity()+ quantity);
+                .findFirst()
+                .orElse(null);
 
+        if (existingItem == null){
+            CartItem newItem = new CartItem();
+            newItem.setCart(cart);
+            newItem.setProduct(product);
+            newItem.setQuantity(quantity);
+            newItem.setUnitPrice(product.getPrice());
+            newItem.setTotalPrice();
+
+            cart.addItem(newItem);
+            log.info("Added a new item to cart. Product {}, Quantity{}",productId,quantity);
+        }else{
+            existingItem.setQuantity(existingItem.getQuantity()+ quantity);
+            existingItem.setTotalPrice();
+
+            cart.getItems().forEach(item->{
+                    if (item.getId().equals(existingItem.getId())){
+                        item.setQuantity(existingItem.getQuantity());
+
+                    }
+            });
+                log.info("Udated existing item in cart . Prodcut {}, New quantity {},",
+                        productId,existingItem.getQuantity());
         }
-        cartItem.setTotalPrice();
-        cart.addItem(cartItem);
-        cartItemRepository.save(cartItem);
+//        cartItem.setTotalPrice();
+//        cart.addItem(cartItem);
+//        cartItemRepository.save(cartItem);
+            BigDecimal totalAmount = cart.getItems().stream().map(CartItem::getTotalPrice).reduce(BigDecimal.ZERO,BigDecimal::add);
+          cart.setTotalAmount(totalAmount);
+
         cartRepository.save(cart);
 
     }

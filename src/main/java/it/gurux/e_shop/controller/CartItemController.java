@@ -1,6 +1,7 @@
 package it.gurux.e_shop.controller;
 
 import it.gurux.e_shop.exception.ResourceNotFoundException;
+import it.gurux.e_shop.model.Cart;
 import it.gurux.e_shop.response.ApiResponse;
 import it.gurux.e_shop.service.cart.ICartItemService;
 import it.gurux.e_shop.service.cart.ICartService;
@@ -24,23 +25,28 @@ public class CartItemController {
 
 
     @PostMapping("/item/add")
-    public ResponseEntity<ApiResponse> addItem(@RequestParam(required = false) Long cartId,
+    public ResponseEntity<ApiResponse> addItem(@RequestParam (required = false) Long userId,
+                                               @RequestParam(required = false) Long cartId,
                                                @RequestParam Long productId,
                                                @RequestParam Integer quantity) {
         int maxRetries = 3;
         int attempt = 0;
         while (attempt < maxRetries) {
             try {
-                if (cartId == null) {
-                    log.info("No cart id provide, creating a new one");
-                    cartId = cartService.initializeNewCart();
-                    log.info("created a new cart with id :{}", cartId);
+                if (cartId ==  null) {
+                    if (userId != null) {
+                        cartId = cartService.initializeNewCart(userId);
+                        log.info("Using cart : {} for user {} ", cartId, userId);
+                    } else {
+                        cartId = cartService.initializeNewCart(null);
+                        log.info("created anonymousCart  :{}", cartId);
+                    }
                 }
                 cartItemService.addItemToCart(cartId, productId, quantity);
                 return ResponseEntity.ok(new ApiResponse("Item added to Cart Successfully", null));
             } catch (OptimisticLockingFailureException e) {
                 attempt++;
-                log.warn("otimistic locking faillure on attempt {} for cartId : {}",
+                log.warn("optimistic locking fall on attempt {} for cartId : {}",
                         attempt, cartId, e.getMessage());
                 if (attempt >= maxRetries) {
                     log.error("Max retries exceeded for adding items to cart", e);
@@ -54,9 +60,8 @@ public class CartItemController {
                     return ResponseEntity.status(CONFLICT)
                             .body(new ApiResponse("Operation interrupted.Try gain.", null));
                 }
-                if (attempt == 1) {
-                    cartId = null;
-                }
+
+                cartId=null;
 
             } catch (ResourceNotFoundException e) {
                 return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));

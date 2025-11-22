@@ -1,5 +1,6 @@
 package it.gurux.e_shop.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,7 @@ public class OrderItem {
 
     @ManyToOne
     @JoinColumn(name =  "order_id")
+    @JsonIgnore
     private Order order;
 
     @ManyToOne

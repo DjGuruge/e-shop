@@ -20,11 +20,12 @@ public class OrderController {
 
     private final IOrderService orderService;
 
-    @GetMapping("/order")
+    @PostMapping("/order")
     public ResponseEntity<ApiResponse> createOrder(@RequestParam Long userId){
         try {
             Order order = orderService.placeOrder(userId);
-            return ResponseEntity.ok(new ApiResponse("Order Success! ",order));
+            OrderDto orderDto = orderService.getOrder(order.getId());
+            return ResponseEntity.ok(new ApiResponse("Order Success! ",orderDto));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error occured",e.getMessage()));
         }

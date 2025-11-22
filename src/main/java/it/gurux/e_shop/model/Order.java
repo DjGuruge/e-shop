@@ -1,5 +1,6 @@
 package it.gurux.e_shop.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import it.gurux.e_shop.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -32,6 +33,7 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OrderItem> orderItem = new HashSet<>();
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

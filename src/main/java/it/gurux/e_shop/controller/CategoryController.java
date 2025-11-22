@@ -24,8 +24,8 @@ public class CategoryController {
     @GetMapping("/all")
     public ResponseEntity<ApiResponse> getAllCategories() {
         try {
-            List<Category> categoires = categoryService.getAllCategories();
-            return ResponseEntity.ok(new ApiResponse("Found", categoires));
+            List<Category> categories = categoryService.getAllCategories();
+            return ResponseEntity.ok(new ApiResponse("Found", categories));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse("Error: ", INTERNAL_SERVER_ERROR));
 

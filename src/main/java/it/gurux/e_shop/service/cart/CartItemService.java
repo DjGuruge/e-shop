@@ -62,7 +62,7 @@ public class CartItemService implements ICartItemService{
 
                     }
             });
-                log.info("Udated existing item in cart . Prodcut {}, New quantity {},",
+                log.info("Udated existing item in cart . Product {}, New quantity {},",
                         productId,existingItem.getQuantity());
         }
 //        cartItem.setTotalPrice();

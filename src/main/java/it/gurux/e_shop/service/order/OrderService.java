@@ -121,14 +121,14 @@ public class OrderService implements IOrderService{
 
     private OrderItemDto convertItemToDto ( OrderItem item) {
         OrderItemDto orderItemDto = new OrderItemDto();
-        orderItemDto.setProductId(item.getId());
+        orderItemDto.setId(item.getId());
         orderItemDto.setQuantity(item.getQuantity());
         orderItemDto.setPrice(item.getPrice());
 
         if (item.getProduct() != null) {
             orderItemDto.setProductId(item.getProduct().getId());
             orderItemDto.setProductName(item.getProduct().getName());
-            orderItemDto.setProductName(item.getProduct().getBrand());
+            orderItemDto.setProductBrand(item.getProduct().getBrand());
         }
 
         return orderItemDto;

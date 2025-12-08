@@ -102,7 +102,7 @@ public class OrderService implements IOrderService{
     }
 
     //@Override
-    private OrderDto convertToDto(Order order){
+    public OrderDto convertToDto(Order order){
         OrderDto orderDto = new OrderDto();
         orderDto.setId(order.getId());
         orderDto.setUserId(order.getUser() != null ? order.getUser().getId() : null);

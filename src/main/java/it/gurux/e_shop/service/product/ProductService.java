@@ -2,6 +2,7 @@ package it.gurux.e_shop.service.product;
 
 import it.gurux.e_shop.dto.ImageDto;
 import it.gurux.e_shop.dto.ProductDto;
+import it.gurux.e_shop.exception.AlreadyExistException;
 import it.gurux.e_shop.exception.ResourceNotFoundException;
 import it.gurux.e_shop.model.Category;
 import it.gurux.e_shop.model.Image;
@@ -37,6 +38,11 @@ public class ProductService implements IProductService {
         // if yes set it as the  new product category
         // if no then save it as new category
         // then set as the new product category
+
+
+        if (productExists(request.getName(), request.getBrand())){
+            throw new AlreadyExistException(request.getBrand() + "" + request.getName()+" already exists");
+        }
         Category category = Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName()))
                 .orElseGet(() -> {
                     Category newCategory = new Category(request.getCategory().getName());
@@ -46,6 +52,17 @@ public class ProductService implements IProductService {
         return productRepository.save(createProduct(request, category));
 
     }
+
+    private boolean productExists(String name, String brand){
+        return productRepository.existsByNameAndBrand(name , brand);
+    }
+
+
+
+
+
+
+
 
     private Product createProduct(AddProductRequest request, Category category) {
         return new Product(

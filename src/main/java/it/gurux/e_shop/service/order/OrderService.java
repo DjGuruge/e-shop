@@ -35,8 +35,6 @@ public class OrderService implements IOrderService{
     @Override
     public Order placeOrder(Long userId) {
         Cart cart = cartService.getOrCreateCartForUser(userId);
-
-
         if (cart.getItems() == null || cart.getItems().isEmpty()){
             throw  new ResourceNotFoundException(" Cannot place order : Cart is empty");
         }

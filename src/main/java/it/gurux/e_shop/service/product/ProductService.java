@@ -23,7 +23,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 
-public class ProductService implements IProductService {
+public class  ProductService implements IProductService {
 
 
     private final ProductRepository productRepository;
@@ -52,6 +52,8 @@ public class ProductService implements IProductService {
         return productRepository.save(createProduct(request, category));
 
     }
+
+
 
     private boolean productExists(String name, String brand){
         return productRepository.existsByNameAndBrand(name , brand);

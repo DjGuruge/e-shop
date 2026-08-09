@@ -1,51 +1,29 @@
 package it.gurux.e_shop.service.user;
 
-import org.springframework.security.core.GrantedAuthority;
+import it.gurux.e_shop.model.User;
+import it.gurux.e_shop.repository.UserRepository;
+import it.gurux.e_shop.service.ShopUserDetails;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Optional;
 
-public class ShopUserDetailsService implements UserDetails {
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
-    }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
-    }
+@Service
+@RequiredArgsConstructor
+public class ShopUserDetailsService implements UserDetailsService {
+
+    private final UserRepository userRepository;
+
 
     @Override
-    public String getPassword() {
-        return "";
-    }
-
-    @Override
-    public String getUsername() {
-        return "";
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+       User user = Optional.ofNullable(userRepository.findByEmail(email ))
+               .orElseThrow(()-> new UsernameNotFoundException("User not found"));
+        return ShopUserDetails.buildUserDetail(user);
     }
 }

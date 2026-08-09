@@ -15,25 +15,22 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.stream;
-import static sun.awt.image.MultiResolutionCachedImage.map;
-
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ShopUserDetails implements UserDetails {
 
-    private Long  id;
-    private String username;
+    private Long id;
+    private String email;
     private String password;
-    private Collection<GrantedAuthority> authorities;
+
+    private  Collection<GrantedAuthority> authorities;
 
 
     public static ShopUserDetails buildUserDetail(User user) {
-        List<GrantedAuthority> authorities = user.getRoles()Collection<Role>
-        .stream() Stream<Role>
+        List<GrantedAuthority> authorities = user.getRoles()
+                .stream()
                 .map(role-> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
 
@@ -49,17 +46,17 @@ public class ShopUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return authorities;
     }
 
     @Override
     public String getPassword() {
-        return "";
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return "";
+        return getUsername();
     }
 
     @Override

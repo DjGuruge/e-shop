@@ -1,4 +1,4 @@
-package it.gurux.e_shop.config;
+package it.gurux.e_shop.security.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

@@ -2,9 +2,11 @@ package it.gurux.e_shop.controller;
 
 import it.gurux.e_shop.exception.ResourceNotFoundException;
 import it.gurux.e_shop.model.Cart;
+import it.gurux.e_shop.model.User;
 import it.gurux.e_shop.response.ApiResponse;
 import it.gurux.e_shop.service.cart.ICartItemService;
 import it.gurux.e_shop.service.cart.ICartService;
+import it.gurux.e_shop.service.user.IUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -22,6 +24,7 @@ public class CartItemController {
 
     private final ICartItemService cartItemService;
     private final ICartService cartService;
+    private final IUserService userService;
 
 
     @PostMapping("/item/add")
@@ -29,47 +32,50 @@ public class CartItemController {
                                                @RequestParam(required = false) Long cartId,
                                                @RequestParam Long productId,
                                                @RequestParam Integer quantity) {
-        int maxRetries = 3;
-        int attempt = 0;
-        while (attempt < maxRetries) {
-            try {
-                if (cartId ==  null) {
-                    if (userId != null) {
-                        cartId = cartService.initializeNewCart(userId);
-                        log.info("Using cart : {} for user {} ", cartId, userId);
-                    } else {
-                        cartId = cartService.initializeNewCart(null);
-                        log.info("created anonymousCart  :{}", cartId);
-                    }
-                }
-                cartItemService.addItemToCart(cartId, productId, quantity);
-                return ResponseEntity.ok(new ApiResponse("Item added to Cart Successfully", null));
-            } catch (OptimisticLockingFailureException e) {
-                attempt++;
-                log.warn("optimistic locking fall on attempt {} for cartId : {}",
-                        attempt, cartId, e.getMessage());
-                if (attempt >= maxRetries) {
-                    log.error("Max retries exceeded for adding items to cart", e);
-                    return ResponseEntity.status(CONFLICT)
-                            .body(new ApiResponse("Unable to add item, Try again.", null));
-                }
-                try {
-                    Thread.sleep(50L * attempt);
-                } catch (InterruptedException ie) {
-                    Thread.currentThread().interrupt();
-                    return ResponseEntity.status(CONFLICT)
-                            .body(new ApiResponse("Operation interrupted.Try gain.", null));
-                }
+        User user = userService.getAuthenticatedUser();
 
-                cartId=null;
 
-            } catch (ResourceNotFoundException e) {
-                return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
-            }
-        }
-        return ResponseEntity.status(CONFLICT)
-                .body(new ApiResponse("Unable to add item. try again .", null));
-    }
+//        int maxRetries = 3;
+//        int attempt = 0;
+//        while (attempt < maxRetries) {
+//            try {
+//                if (cartId ==  null) {
+//                    if (userId != null) {
+//                        cartId = cartService.initializeNewCart(userId);
+//                        log.info("Using cart : {} for user {} ", cartId, userId);
+//                    } else {
+//                        cartId = cartService.initializeNewCart(null);
+//                        log.info("created anonymousCart  :{}", cartId);
+//                    }
+//                }
+//                cartItemService.addItemToCart(cartId, productId, quantity);
+//                return ResponseEntity.ok(new ApiResponse("Item added to Cart Successfully", null));
+//            } catch (OptimisticLockingFailureException e) {
+//                attempt++;
+//                log.warn("optimistic locking fall on attempt {} for cartId : {}",
+//                        attempt, cartId, e.getMessage());
+//                if (attempt >= maxRetries) {
+//                    log.error("Max retries exceeded for adding items to cart", e);
+//                    return ResponseEntity.status(CONFLICT)
+//                            .body(new ApiResponse("Unable to add item, Try again.", null));
+//                }
+//                try {
+//                    Thread.sleep(50L * attempt);
+//                } catch (InterruptedException ie) {
+//                    Thread.currentThread().interrupt();
+//                    return ResponseEntity.status(CONFLICT)
+//                            .body(new ApiResponse("Operation interrupted.Try gain.", null));
+//                }
+//
+//                cartId=null;
+//
+//            } catch (ResourceNotFoundException e) {
+//                return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+//            }
+//        }
+//        return ResponseEntity.status(CONFLICT)
+//                .body(new ApiResponse("Unable to add item. try again .", null));
+//    }
     @DeleteMapping("/{cartId}/item/{itemId}/remove")
     public ResponseEntity<ApiResponse> removeItemFromCart (@PathVariable Long cartId,
                                                            @PathVariable Long itemId){

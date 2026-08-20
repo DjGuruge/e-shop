@@ -10,7 +10,7 @@ import it.gurux.e_shop.service.cart.ICartService;
 import it.gurux.e_shop.service.user.IUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.OptimisticLockingFailureException;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

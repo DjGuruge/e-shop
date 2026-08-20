@@ -1,5 +1,6 @@
 package it.gurux.e_shop.controller;
 
+import io.jsonwebtoken.JwtException;
 import it.gurux.e_shop.exception.ResourceNotFoundException;
 import it.gurux.e_shop.model.Cart;
 import it.gurux.e_shop.model.User;
@@ -13,8 +14,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static org.springframework.http.HttpStatus.CONFLICT;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 @Slf4j
 @RestController
@@ -32,8 +32,22 @@ public class CartItemController {
                                                @RequestParam(required = false) Long cartId,
                                                @RequestParam Long productId,
                                                @RequestParam Integer quantity) {
-        User user = userService.getAuthenticatedUser();
 
+
+
+        try {
+            if (cartId == null) {
+                User user = userService.getAuthenticatedUser();
+                Long cart = cartService.initializeNewCart();
+            }
+            cartItemService.addItemToCart(cartId, productId, quantity);
+            return ResponseEntity.ok(new ApiResponse("Add Item Success", null));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }catch (JwtException e) {
+            return ResponseEntity.status(UNAUTHORIZED).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
 
 //        int maxRetries = 3;
 //        int attempt = 0;

@@ -103,7 +103,7 @@ public class CartService implements ICartService{
 
         if ( cart == null) {
             User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new ResourceNotFoundException(" USer not found "));
+                    .orElseThrow(() -> new ResourceNotFoundException(" User not found "));
             cart = new Cart();
             cart.setUser(user);
             cart = cartRepository.save(cart);
